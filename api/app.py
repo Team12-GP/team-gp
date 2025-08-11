@@ -5,14 +5,16 @@ import re
 
 app = FastAPI()
 
+# ✅ Root route for status check
+@app.get("/")
+def root():
+    return {"message": "✅ FastAPI is running. Use /api/v1/call?num=XXXXXXXXXXX"}
+
 @app.get("/api/v1/call")
 def call_api(num: str = Query(..., min_length=11, max_length=11)):
-
-    # Validate number is exactly 11 digits
     if not re.fullmatch(r'\d{11}', num):
         raise HTTPException(status_code=400, detail="Number must be exactly 11 digits")
 
-    # External API call
     external_url = f"https://funnyapi1.vercel.app/call/api/v1?num={num}"
     
     try:
